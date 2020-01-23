@@ -1,13 +1,14 @@
-const config = require("./utils/config")
-const express = require('express')
-const bodyParser = require('body-parser')
+const express = require("express")
+// eslint-disable-next-line import/no-extraneous-dependencies
+const bodyParser = require("body-parser")
 
 const app = express()
 
-const cors = require('cors')
+const cors = require("cors")
+const mongoose = require("mongoose")
 const blogsRouter = require("./controllers/blogs")
 const middleware = require("./utils/middleware")
-const mongoose = require('mongoose')
+const config = require("./utils/config")
 
 console.log("connecting to", config.MONGODB_URI)
 

@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 require("dotenv").config()
 
 let { PORT } = process.env

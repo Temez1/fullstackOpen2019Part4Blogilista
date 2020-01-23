@@ -1,4 +1,6 @@
-const mongoose = require('mongoose')
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-underscore-dangle */
+const mongoose = require("mongoose")
 
 mongoose.set("useUnifiedTopology", true)
 
@@ -6,7 +8,7 @@ const blogSchema = mongoose.Schema({
   title: String,
   author: String,
   url: String,
-  likes: Number
+  likes: Number,
 })
 
 blogSchema.set("toJSON", {
@@ -17,4 +19,4 @@ blogSchema.set("toJSON", {
   },
 })
 
-module.exports = mongoose.model('Blog', blogSchema)
+module.exports = mongoose.model("Blog", blogSchema)
