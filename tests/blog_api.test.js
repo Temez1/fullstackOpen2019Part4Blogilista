@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const mongoose = require("mongoose")
 const supertest = require("supertest")
 const _ = require("lodash")
@@ -10,12 +11,7 @@ const Blog = require("../models/blog")
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-
-  let blogObject = new Blog(helper.initialBlogs[0])
-  await blogObject.save()
-
-  blogObject = new Blog(helper.initialBlogs[1])
-  await blogObject.save()
+  await Blog.insertMany(helper.rawBlogTestData)
 })
 
 test("blogs are returned as json", async () => {
@@ -28,7 +24,7 @@ test("blogs are returned as json", async () => {
 test("right amount of blogs are returned", async () => {
   const response = await api.get("/api/blogs")
 
-  expect(response.body.length).toBe(2)
+  expect(response.body.length).toBe(helper.initialBlogs.length)
 })
 
 test("a specific blog title is within the returned blog titles", async () => {
@@ -41,8 +37,7 @@ test("a specific blog title is within the returned blog titles", async () => {
 
 test("a specific blog is within the returned blogs", async () => {
   const response = await api.get("/api/blogs")
-
-  const blogs = _.map(response.body, (blog) => _.pick(blog, ["title", "author", "url", "likes"]))
+  const blogs = response.body
   expect(blogs[0]).toEqual(helper.initialBlogs[0])
 })
 
@@ -61,10 +56,10 @@ test("a valid blog can be added", async () => {
     .expect("Content-Type", /application\/json/)
 
   const blogsAtTheEnd = await helper.blogsInDb()
-  const blogs = _.map(blogsAtTheEnd, (blog) => _.pick(blog, ["title", "author", "url", "likes"]))
+  const blogsWithoutId = _.map(blogsAtTheEnd, (blog) => _.pick(blog, ["author", "likes", "title", "url"]))
 
-  expect(blogsAtTheEnd.length).toBe(3)
-  expect(blogs[2]).toEqual(newBlog)
+  expect(blogsAtTheEnd.length).toBe(helper.initialBlogs.length + 1)
+  expect(blogsWithoutId).toContainEqual(newBlog)
 })
 
 test("a blog without title is not added", async () => {
@@ -81,8 +76,40 @@ test("a blog without title is not added", async () => {
 
   const blogsAtTheEnd = await helper.blogsInDb()
 
-  expect(blogsAtTheEnd.length).toBe(2)
+  expect(blogsAtTheEnd.length).toBe(helper.initialBlogs.length)
+  expect(blogsAtTheEnd).not.toContainEqual(newBlog)
 })
+
+test("a blog without likes returns the blog with likes as zero", async () => {
+  const newBlog = {
+    _id: "5e2c0f27de541f1e6442e71d",
+    author: "mikki",
+    title: "hiiri",
+    url: "liibalaaba",
+  }
+
+  await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(201)
+    .expect("Content-Type", /application\/json/)
+
+  const blogsAtTheEnd = await helper.blogsInDb()
+  const blogWithLikes = { ...newBlog, likes: 0, id: newBlog._id }
+  delete blogWithLikes._id
+
+  expect(blogsAtTheEnd.length).toBe(helper.initialBlogs.length + 1)
+  expect(blogsAtTheEnd).toContainEqual(blogWithLikes)
+})
+/*
+test("a specific blog can be viewed", async () => {
+  const blogsAtStart = await helper.blogsInDb()
+
+  const blogToView = blogsAtStart[0]
+
+  const resultBlog = await api
+    .get(`/api/blogs/${}`)
+}) */
 
 afterAll(() => {
   mongoose.connection.close()

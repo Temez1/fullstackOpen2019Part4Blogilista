@@ -1,5 +1,17 @@
+const _ = require("lodash")
 const Blog = require("../models/blog")
-const initialBlogs = require("./blog_test_data")
+const rawBlogTestData = require("./blog_test_data")
+
+const setupBlogs = () => (
+  _.map(rawBlogTestData, (blog) => {
+    // eslint-disable-next-line no-underscore-dangle
+    const id = blog._id
+    const modifiedBlog = _.pick(blog, ["title", "author", "url", "likes"])
+    modifiedBlog.id = id
+    return modifiedBlog
+  })
+)
+const initialBlogs = setupBlogs()
 
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
@@ -7,5 +19,5 @@ const blogsInDb = async () => {
 }
 
 module.exports = {
-  initialBlogs, blogsInDb,
+  initialBlogs, blogsInDb, rawBlogTestData,
 }
