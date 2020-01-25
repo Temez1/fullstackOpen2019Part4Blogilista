@@ -16,11 +16,7 @@ const errorHandler = (error, req, res, next) => {
   logger.error(error.message)
 
   if (error.name === "ValidationError") {
-    if (error.errors.title) {
-      if (error.errors.title.kind === "required") {
-        res.status(400).json({ error: error.message })
-      }
-    }
+    res.status(400).json({ error: error.message })
   }
   next(error)
 }

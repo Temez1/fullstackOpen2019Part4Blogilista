@@ -3,6 +3,7 @@
 const mongoose = require("mongoose")
 
 mongoose.set("useUnifiedTopology", true)
+mongoose.set("useFindAndModify", false)
 
 const blogSchema = mongoose.Schema({
   title: {
