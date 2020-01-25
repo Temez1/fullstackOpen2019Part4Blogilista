@@ -95,21 +95,41 @@ test("a blog without likes returns the blog with likes as zero", async () => {
     .expect("Content-Type", /application\/json/)
 
   const blogsAtTheEnd = await helper.blogsInDb()
+
   const blogWithLikes = { ...newBlog, likes: 0, id: newBlog._id }
   delete blogWithLikes._id
 
   expect(blogsAtTheEnd.length).toBe(helper.initialBlogs.length + 1)
   expect(blogsAtTheEnd).toContainEqual(blogWithLikes)
 })
-/*
+
 test("a specific blog can be viewed", async () => {
   const blogsAtStart = await helper.blogsInDb()
 
   const blogToView = blogsAtStart[0]
 
-  const resultBlog = await api
-    .get(`/api/blogs/${}`)
-}) */
+  const response = await api
+    .get(`/api/blogs/${blogToView.id}`)
+    .expect(200)
+    .expect("Content-Type", /application\/json/)
+
+  expect(response.body).toEqual(blogToView)
+})
+
+test("a blog can be deleted", async () => {
+  const blogsAtStart = await helper.blogsInDb()
+
+  const blogToDelete = blogsAtStart[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const blogsAtTheEnd = await helper.blogsInDb()
+
+  expect(blogsAtTheEnd.length).toBe(blogsAtStart.length - 1)
+  expect(blogsAtTheEnd).not.toContainEqual(blogToDelete)
+})
 
 afterAll(() => {
   mongoose.connection.close()
