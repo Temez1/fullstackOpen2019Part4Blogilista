@@ -2,12 +2,12 @@
 const mongoose = require("mongoose")
 const supertest = require("supertest")
 const _ = require("lodash")
-const app = require("../app")
+const app = require("../../app")
 
 const api = supertest(app)
 
-const helper = require("./test_helper")
-const Blog = require("../models/blog")
+const helper = require("../test_helper")
+const Blog = require("../../models/blog")
 
 describe("with blogs in test database", () => {
   beforeEach(async () => {
