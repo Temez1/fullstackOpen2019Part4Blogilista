@@ -17,12 +17,9 @@ const setupData = (testData) => (
 const initialBlogs = setupData(rawBlogTestData)
 const initialUsers = setupData(rawUserTestData)
 
-const documentsInDb = async (model, toJSON = true) => {
+const documentsInDb = async (model) => {
   const documents = await model.find({})
-  if (toJSON) {
-    return documents.map((document) => document.toJSON())
-  }
-  return documents
+  return documents.map((document) => document.toJSON())
 }
 
 const blogsInDb = () => documentsInDb(Blog)

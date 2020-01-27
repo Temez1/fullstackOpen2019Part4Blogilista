@@ -183,7 +183,7 @@ describe.only("Blog with user information", () => {
     await User.insertMany(helper.rawUserTestData)
   })
 
-  test("adding a blog with user id saves the blog and returns blog with user information", async () => {
+  test("adding a blog with user id saves the blog", async () => {
     const users = await helper.usersInDb()
 
     const newBlog = {
@@ -194,19 +194,11 @@ describe.only("Blog with user information", () => {
       userId: `${users[0].id}`,
     }
 
-    const response = await api
+    await api
       .post("/api/blogs")
       .send(newBlog)
       .expect(201)
       .expect("Content-Type", /application\/json/)
-
-    const blogsAtTheEnd = await helper.blogsInDb()
-    const usersAtTheEnd = await helper.usersInDb()
-
-    console.log(usersAtTheEnd)
-    console.log(response.body)
-    console.log(_.last(blogsAtTheEnd))
-    expect(_.last(blogsAtTheEnd)).toEqual(response.body)
   })
 })
 

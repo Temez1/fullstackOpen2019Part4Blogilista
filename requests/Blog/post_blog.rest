@@ -1,8 +1,9 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5pbWkiLCJpZCI6IjVlMmYwMjRkOTgwMDIxMTJlNDZmYzM3NCIsImlhdCI6MTU4MDE0MDI2NX0.oRzO63OWyio1_UkZp3938TZ99ohBFZ_JwesWjyyCRHc
 
 {
-  "title": "tt",
+  "title": "lol",
   "author":"ts",
   "url": "tees",
   "likes": "13"

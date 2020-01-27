@@ -27,7 +27,7 @@ test("User model returns model with correct schema", () => {
   })
 })
 
-test("User model has method toJSON which returns document with id instead of _id and blogs property as string", () => {
+test("User model has method toJSON which returns document with id instead of _id", () => {
   const blog1 = new Blog({ title: "jes", author: "joo", url: "eiole" })
   const blog2 = new Blog({ title: "test", author: "test", url: "te" })
 
@@ -43,10 +43,10 @@ test("User model has method toJSON which returns document with id instead of _id
 
   const userToJSON = new User(userInfo).toJSON()
 
+  console.log(userToJSON)
+
   expect(userToJSON.id).toBeDefined()
   expect(userToJSON._id).not.toBeDefined()
-  expect(typeof userToJSON.blogs[0]).toBe("string")
-  expect(typeof userToJSON.blogs[1]).toBe("string")
 })
 
 test("User model method toJSON returns blogs as empty if user has no blogs", () => {
