@@ -7,7 +7,7 @@ const rawUserTestData = require("./test_data/user_test_data")
 const setupData = (testData) => (
   testData.map((object) => {
     const modifiedObject = { ...object }
-    modifiedObject.id = object._id
+    modifiedObject.id = object._id.toString()
     delete modifiedObject._id
     delete modifiedObject.__v
     return modifiedObject

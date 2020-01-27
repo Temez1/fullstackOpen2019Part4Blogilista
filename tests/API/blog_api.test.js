@@ -8,6 +8,7 @@ const api = supertest(app)
 
 const helper = require("../test_helper")
 const Blog = require("../../models/blog")
+const User = require("../../models/user")
 
 describe("with blogs in test database", () => {
   beforeEach(async () => {
@@ -171,6 +172,41 @@ describe("with blogs in test database", () => {
         expect(response.body.likes).toEqual(blogToUpdate.likes)
       })
     })
+  })
+})
+
+describe.only("Blog with user information", () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    await Blog.insertMany(helper.rawBlogTestData)
+    await User.deleteMany({})
+    await User.insertMany(helper.rawUserTestData)
+  })
+
+  test("adding a blog with user id saves the blog and returns blog with user information", async () => {
+    const users = await helper.usersInDb()
+
+    const newBlog = {
+      title: "A new day",
+      author: "Mysteeri mikitin",
+      url: "https://eilöydy.com/",
+      likes: 100,
+      userId: `${users[0].id}`,
+    }
+
+    const response = await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .expect(201)
+      .expect("Content-Type", /application\/json/)
+
+    const blogsAtTheEnd = await helper.blogsInDb()
+    const usersAtTheEnd = await helper.usersInDb()
+
+    console.log(usersAtTheEnd)
+    console.log(response.body)
+    console.log(_.last(blogsAtTheEnd))
+    expect(_.last(blogsAtTheEnd)).toEqual(response.body)
   })
 })
 
